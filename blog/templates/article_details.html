@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Details - {{ post.title }}{% endblock %}
+
+{%block content %}
+    <h1>{{ post.title }}</h1>
+    <small>
+        Post By: <a href="{% url 'show' post.author.profile.id %}">{{ post.author.first_name }} {{ post.author.last_name }}</a> - {{post.post_date}}
+    </small>
+    <br>
+    <br>
+    {% if user.is_authenticated %}
+        {% if user.id == post.author.id %}
+            <a href="{% url 'update-post' post.pk %}" class="btn btn-primary">Edit Post</a>
+            <a href="{% url 'delete-post' post.pk %}" class="btn btn-danger">Delete Post</a>
+        {% endif %}
+    {% endif %}
+    <br>
+    <hr>
+    {% if post.header_image %}
+        <img src="{{ post.header_image.url }}" alt="">
+        <br>
+    {% endif %}
+    <br>
+    {{ post.body|safe }}
+    
+    <hr>
+    <!-- like button block -->
+    <form action="{% url 'like_post' post.pk %}" method="POST">
+        {% csrf_token %}
+
+        {% if user.is_authenticated %}
+            {% if liked %}
+                <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-danger btn-sm">Unlike</button> - {{ total_likes }}
+            {% else %}
+                <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-outline-danger">Like</button> - {{ total_likes }}
+            {% endif %}
+        {% else %}
+            <small><a href="{% url 'login' %}">Login</a> to like!</small>
+        {% endif %}
+    </form>
+    <!-- like button block -->
+
+    <br>
+
+    <!-- Comments block -->
+    {% if user.is_authenticated %}
+        {% if not post.comments.all %}
+            No Comments Yet... <a href="{% url 'add-comment' post.pk %}">Add one</a>
+        {% else %}        
+        <a href="{% url 'add-comment' post.pk %}">Add comment</a>
+        <br>
+            {% for comment in post.comments.all %}
+            <br><br>
+                <strong>{{ comment.name }}</strong> <span class="text-muted">- {{ comment.date_added }}</span>
+                <br>
+                {{ comment.body }}
+            {% endfor %}
+        {% endif %}
+    {% else %}
+        <small><a href="{% url 'login' %}">Login</a> to comment!</small>
+    {% endif %}
+    <!-- Comments block -->
+
+    <hr>
+    <br>
+    <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+{% endblock %}

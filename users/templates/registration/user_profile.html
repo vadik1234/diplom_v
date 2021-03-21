@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <h2>{{page_user}} page</h2>     
+    <br>
+    <div class="card mb-8" style="max-width: 540px;">
+        <div class="row no-gutters">
+        <div class="col-md-4">
+            {% if page_user.profile_pic %}
+                <img class="card-img" src="{{ page_user.profile_pic.url }}" alt="">
+            {% else %}
+                <img class="card-img" src="{% static 'blog/images/default.jpg' %}" alt="">
+            {% endif %}        
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+            <h5 class="card-title">
+                <center>
+                    {{ page_user.user.first_name }}
+                    {{ page_user.user.last_name }}                    
+                </center>                
+            </h5>
+            {% if page_user.bio %}
+                <center><p class="card-text">{{ page_user.bio }}</p></smal><br></center><smal>
+            {% endif %}
+            {% if page_user.addres %}
+                <small ><p class="card-text">Addres: <span class="text-muted">{{ page_user.addres }}</span></p></small>
+            {% endif %}
+            {% if page_user.email %}
+                <p class="card-text"><small >Email: <span class="text-muted">{{ page_user.email }}</span></small></p>
+            {% endif %}
+            </div>
+        </div>
+        </div>
+    </div>
+    <br><br>
+    <hr>
+    <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
+
+{% endblock %}
